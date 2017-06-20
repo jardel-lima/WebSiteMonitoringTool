@@ -38,7 +38,7 @@ Service Level Objective (SLO).
 
 # USAGE
 
-When the script was executed you will see a simple option menu:
+While the script is running you will see a simple option menu:
     
     Menu:
     s - Show Status
