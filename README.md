@@ -39,20 +39,20 @@ Service Level Objective (SLO).
 # USAGE
 
 When the script was executed you will see a simple option menu:
+    
     Menu:
     s - Show Status
     r - Save Report
     q - Exit
     Choice:
 
-    When you type and enter one of those options, the following will happen:
+   When you type and enter one of those options, the following will happen:
 
-    s - Will be displayed on the terminal the current SLI the SLO and the STATUS
-    (if SLI >= SLO GOOD will be displayed otherwise BAD);
+        s - Will be displayed on the terminal the current SLI the SLO and the STATUS (if SLI >= SLO GOOD will be displayed otherwise BAD);
 
-    r - The same output seen on terminal when s is selected will be save on a text file called report.txt;
+        r - The same output seen on terminal when s is selected will be save on a text file called report.txt;
 
-    q - The aplication will stop.
+        q - The aplication will stop.
 
 
 # DEVELOPMENT CONSIDERATIONS
