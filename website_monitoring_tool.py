@@ -82,8 +82,8 @@ def get_status_info():
     info = 'SHOW WEBSITE STATUS\n'
     info += 'BEGIN TIME {}\n'.format(time.strftime('%d/%m/%Y -- %H:%M:%S', begin_time))
     info += 'NOW {}\n'.format(time.strftime('%d/%m/%Y -- %H:%M:%S'))
-    info += '{0:40s}\t{1:30s}\t{2:30s}\n'.format('', 'SUCCESSFUL RESPONSE', 'FAST RESPONSE')
-    info += '{0:40s}\t{1:10s}\t{2:10s}\t{3:10s}\t{4:10s}\t{5:10s}\t{6:10s}\t{7}\n' \
+    info += '{0:40s}\t{1:40s}\t{2:30s}\n'.format('', 'SUCCESSFUL RESPONSE', 'FAST RESPONSE')
+    info += '{0:40s}\t{1:10s}\t{2:10s}\t{3:10s}\t{4:10s}\t{5:10s}\t{6:10s}  {7}\n' \
         .format('URL', 'SLI', 'SLO', 'STATUS', 'SLI', 'SLO', 'STATUS','OBS')
 
     for site in sites:
@@ -115,7 +115,7 @@ def get_status_info():
         else:
             dns_error = ''
 
-        info += '{0:40s}\t{1:10.2f}%\t{2:10.2f}%\t{3:10s}\t{4:10.2f}%\t{5:10.2f}%\t{6:10s}\t{7}{8}\n'.format(
+        info += '{0:40s}\t{1:10.2f}%\t{2:10.2f}%\t{3:10s}\t{4:10.2f}%\t{5:10.2f}%\t{6:10s}  {7}{8}\n'.format(
             site.url,
             sli_succ_resp,
             site.succ_res_slo,

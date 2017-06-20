@@ -20,7 +20,7 @@ class WebSiteMonitor:
         self.threads = []
 
     #Thread responsable for making requests
-    def __make_request_thread(self, show=True):
+    def __make_request_thread(self, show=False):
         try:
             self.req_n += 1
             req_nn = self.req_n
