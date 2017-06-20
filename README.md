@@ -1,7 +1,7 @@
-##WEBSITE MONITORING TOOL##
+# #WEBSITE MONITORING TOOL##
 
 
-#DESCRIPTION
+# DESCRIPTION
 
 This script will monitor Service Level Indicators (SLI) of a list of websites. Two SLIs will be monitored:
 SUCCESSFUL RESPONSE and FAST RESPONSE.
@@ -12,17 +12,17 @@ For a list of website url's a get request will be made every 5 seconds. Each SLI
 Service Level Objective (SLO).
 
 
-#REQUIREMENTS
+# REQUIREMENTS
 
     - Python 2.7
 
 
-#INSTALLATION
+# INSTALLATION
 
     - Clone project or copy the  websitemonitor.py and website_monitoring_tool.py files to the same folder
 
 
-#EXECUTION
+# EXECUTION
 
     - First create a text file with website urls and their respective Service Level Objectives with the
     following format:
@@ -36,7 +36,7 @@ Service Level Objective (SLO).
     - If every thing went well you will see the message: 'Monitoring has started!'
 
 
-#USAGE
+# USAGE
 
 When the script was executed you will see a simple option menu:
     Menu:
@@ -55,7 +55,7 @@ When the script was executed you will see a simple option menu:
     q - The aplication will stop.
 
 
-#DEVELOPMENT CONSIDERATIONS
+# DEVELOPMENT CONSIDERATIONS
 
 This application was writen using Python for 3 reasons:
     1 - It is very simple and powerful programming language;
@@ -76,7 +76,7 @@ and even though the last request made cannot be a fast response anymore, once it
 a successful response still. So, I create a new thread to the new request and keep the old one in the list.
 Not to keep finished threads in the list, I remove threads that are not alive anymore.
 
-#IMPROVEMENTS AND ISSUES
+# IMPROVEMENTS AND ISSUES
 
 The first improvement on this application was to create a better user interface, although it does what
 it was asked for, this application is not user-friendly. A GUI to better user interaction and visualization
