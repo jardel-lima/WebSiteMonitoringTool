@@ -90,7 +90,7 @@ DNS servers can cause a 'Name or service not known' error when monitoring more t
 Some forums said that this is error can be caused be the DNS server. I did not have time to better investigate
 this error and find solutions, so I used a try catch as a workaround.
 
-#CREDITS
+# CREDITS
 
 This script was developed by Jardel Ribeiro de Lima (jardelribeiro.lima@gmail.com)
 
