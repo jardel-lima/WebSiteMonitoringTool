@@ -6,11 +6,13 @@ import sys
 import threading
 import time
 import re
+import math
 
 from websitemonitor import WebSiteMonitor
 
 sites = []
 begin_time = None
+begin_time_show = None
 
 #Verify if Exist any thread alive
 def has_alive_thread(threads):
@@ -30,7 +32,6 @@ def validate_input(input):
     if not match or not (float(input[2].replace(',','.')) >= 0 and float(input[2].replace(',','.')) <= 100 ):
         return False
 
-
     match = re.search(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
                       input[0])
     if not match:
@@ -39,6 +40,8 @@ def validate_input(input):
     return True
 
 #Read input file with URL's and SLO's
+
+
 def read_file(file):
 
     sites=[]
@@ -61,7 +64,7 @@ def read_file(file):
                     if url[-1] == '/':
                         url = url[:-1]
 
-                    site = WebSiteMonitor(url,float(info[1]),float(info[2]))
+                    site = WebSiteMonitor(url,float(info[1]),float(info[2]), float(info[3]))
                     sites.append(site)
     except IOError:
         print('Could not open file {}.'.format(file))
@@ -71,20 +74,26 @@ def read_file(file):
 
 #Thread responsable for making requests every 5 seconds
 def make_requests_thread():
+    count = 0
     while True:
         for site in sites:
             site.make_request()
         time.sleep(5)
+        count += 1
+        if count == 12:
+            for site in sites:
+                site.calc_percentil()
+            count = 0
 
 #Mount string with websites status info
 def get_status_info():
 
     info = 'SHOW WEBSITE STATUS\n'
-    info += 'BEGIN TIME {}\n'.format(time.strftime('%d/%m/%Y -- %H:%M:%S', begin_time))
+    info += 'BEGIN TIME {}\n'.format(time.strftime('%d/%m/%Y -- %H:%M:%S', begin_time_show))
     info += 'NOW {}\n'.format(time.strftime('%d/%m/%Y -- %H:%M:%S'))
-    info += '{0:40s}\t{1:40s}\t{2:30s}\n'.format('', 'SUCCESSFUL RESPONSE', 'FAST RESPONSE')
-    info += '{0:40s}\t{1:10s}\t{2:10s}\t{3:10s}\t{4:10s}\t{5:10s}\t{6:10s}  {7}\n' \
-        .format('URL', 'SLI', 'SLO', 'STATUS', 'SLI', 'SLO', 'STATUS','OBS')
+    info += '{0:40s}\t{1:40s}\t{2:30s}\t{3:30s}\n'.format('', 'SUCCESSFUL RESPONSE', 'FAST RESPONSE', 'PERCENTIL')
+    info += '{0:40s}\t{1:10s}\t{2:10s}\t{3:10s}\t{4:10s}\t{5:10s}\t{6:10s}\t{7:10s}\t{8:10s} {9}\n' \
+        .format('URL', 'SLI', 'SLO', 'STATUS', 'SLI', 'SLO', 'STATUS', 'SLI', 'SLO', 'STATUS','OBS')
 
     for site in sites:
 
@@ -106,7 +115,7 @@ def get_status_info():
             succ_sli_status = 'GOOD'
 
         if has_alive_thread(site.threads):
-            alive_threads = '*'
+            alive_threads = '*{}'.format(len(site.threads))
         else:
             alive_threads = ''
 
@@ -115,14 +124,34 @@ def get_status_info():
         else:
             dns_error = ''
 
-        info += '{0:40s}\t{1:10.2f}%\t{2:10.2f}%\t{3:10s}\t{4:10.2f}%\t{5:10.2f}%\t{6:10s}  {7}{8}\n'.format(
-            site.url,
+        time_now = time.time()
+        min_passed = (time_now - begin_time)/60.0
+
+        min_passed = math.floor(min_passed)
+
+        if min_passed!= 0:
+            perc_sli = (site.perc_ok_n/min_passed)*100
+
+        else:
+            perc_sli = 0.0
+
+
+        if perc_sli < site.perc_slo:
+            perc_status = 'BAD'
+        else:
+            perc_status = 'GOOD'
+
+        info += '{0:40s}\t{1:10.2f}%\t{2:10.2f}%\t{3:10s}\t{4:10.2f}%\t{5:10.2f}%\t{6:10s} \t{7:10.2f}%\t{8:10.2f}%\t{9:10s} {10}{11}\n'.format(
+            site.url[:35],
             sli_succ_resp,
             site.succ_res_slo,
             succ_sli_status,
             sli_fast_resp,
             site.fast_res_slo,
             fast_sli_status,
+            perc_sli,
+            site.perc_slo,
+            perc_status,
             alive_threads,
             dns_error)
     info += 'Legend:\n* - Waiting for succesful responses\n+ - DNS Error'
@@ -157,7 +186,8 @@ if __name__ == "__main__":
         thread = threading.Thread(target=make_requests_thread)
         thread.daemon = True
         thread.start()
-        begin_time = time.localtime()
+        begin_time = time.time()
+        begin_time_show = time.localtime()
 
         print('\nMonitoring has started!')
 

@@ -5,19 +5,23 @@
 import httplib
 import threading
 import time
+import numpy as np
 
 class WebSiteMonitor:
 
     #Class constructor.
-    def __init__(self, url, succ_res_slo, fast_res_slo):
+    def __init__(self, url, succ_res_slo, fast_res_slo, perc_slo):
         self.url = url
         self.succ_res_slo = succ_res_slo
         self.fast_res_slo = fast_res_slo
+        self.perc_slo = perc_slo
         self.req_n = 0
         self.succ_res_n = 0
         self.fast_res_n = 0
         self.dns_error = False
         self.threads = []
+        self.req_time = []
+        self.perc_ok_n = 0
 
     #Thread responsable for making requests
     def __make_request_thread(self, show=False):
@@ -29,6 +33,10 @@ class WebSiteMonitor:
             begin_time = time.time()
             conn.request("GET", "/")
             end_time = time.time()
+
+            req_time_value = end_time - begin_time
+
+            self.req_time.append(req_time_value)
 
             resp = conn.getresponse()
 
@@ -53,6 +61,11 @@ class WebSiteMonitor:
                 print('Menu:\nr - Report\ns - Show status\nq - Exit')
                 print('Choice:')
 
+    def calc_percentil(self):
+        percentil = np.percentile(self.req_time, 90)
+        if percentil <= 1:
+            self.perc_ok_n += 1
+        del self.req_time[:]
 
     def make_request(self):
 
